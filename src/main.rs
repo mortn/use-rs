@@ -3,7 +3,7 @@ use axum::{
     extract::{Path, State},
     http::StatusCode,
     response::{IntoResponse, Json},
-    routing::{delete, get, post, put},
+    routing,
     Router,
 };
 use diesel::{
@@ -139,8 +139,8 @@ async fn main() {
         .expect("Failed to create pool.");
 
     let app = Router::new()
-        .route("/users", post(create_user).get(read_users))
-        .route("/users/:id", get(read_user).put(update_user).delete(delete_user))
+        .route("/users", routing::post(create_user).get(routing::get(read_users)))
+        .route("/users/:id", routing::get(read_user).put(routing::put(update_user)).delete(routing::delete(delete_user)))
         .with_state(pool);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
